@@ -57,7 +57,7 @@ public class Student extends Member {
 		}
 
 		else {
-			LOGGER.info("You don't have enough money to pay!");
+			LOGGER.info("You don't have enough of money to pay!");
 
 		}
 

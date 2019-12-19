@@ -25,10 +25,12 @@ public class TownsvilleLibraryApp {
 
 		String uuid = idGenerator.generateUniqueId();
 		MDC.put("id", uuid);
+		System.out.println("*** Please check the log file townsville-library.log for debugging ***");
 		LOGGER.info("***Start testing from main****");
+		
 		BookRepositoryDao bookRepository = new BookRepository();
 
-		LOGGER.info("Testing with a resident member who has no late");
+		LOGGER.info("Testing with a resident member who has no late book");
 		Member resident = new Resident(600, false);
 
 		resident.setBookRepositoryDao(bookRepository);
@@ -44,22 +46,29 @@ public class TownsvilleLibraryApp {
 		// ajout d'une liste des livres
 		LOGGER.info("Saving a list of book");
 		bookRepository.addBooks(books);
-		LOGGER.info("The resident trying to borrow a book");
+
 		long isbn = 13;
-		LocalDate borrowedAt = LocalDate.parse("2019-10-02");
-
+		LocalDate borrowedAt = LocalDate.parse("2019-10-01");
+		LOGGER.info("The resident trying to borrow a book with code : " + isbn);
 		Book borrowBook = resident.borrowBook(isbn, resident, borrowedAt);
-		System.out.println("borrowBook " + borrowBook.getTitle());
+		LOGGER.info("borrowBook " + borrowBook.getTitle());
 
-		LocalDate borrowedAtre = bookRepository.findBorrowedBookDate(borrowBook);
-		resident.returnBook(borrowBook, resident);
+		long isbn2 = 12;
+		LocalDate borrowedAt2 = LocalDate.parse("2019-12-12");
+		LOGGER.info("The resident trying to borrow a book with code : " + isbn2);
+		Book borrowedBook2 = resident.borrowBook(isbn2, resident, borrowedAt2);
+		LOGGER.info("borrowBook2 " + borrowedBook2.getTitle());
+
+		LOGGER.info("The resident return the borrowedBook2  : " + borrowedBook2.getTitle());
+		resident.returnBook(borrowedBook2, resident);
+		LOGGER.info("Borrowed date before returning the book : " + bookRepository.findBorrowedBookDate(borrowBook));
 		LocalDate borrowedAtafter = bookRepository.findBorrowedBookDate(borrowBook);
 
-		long isbn5 = 1;
-		LocalDate ll = LocalDate.parse("2019-12-12");
-		Book borrowBook3 = resident.borrowBook(isbn5, resident, ll);
-		System.out.println("borrowBook " + borrowBook3.getTitle());
+		long isbn3 = 14;
+		LocalDate borrowedAt3 = LocalDate.parse("2019-12-28");
+		LOGGER.info("The resident trying to borrow a book with code : " + isbn3);
+		Book borrowedBook3 = resident.borrowBook(isbn3, resident, borrowedAt3);
+		LOGGER.info("borrowedAt3 " + borrowedBook3.getTitle());
 
 	}
-
 }

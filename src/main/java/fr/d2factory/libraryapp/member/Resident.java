@@ -16,12 +16,12 @@ public class Resident extends Member {
 
 	public Resident(float wallet, boolean late) {
 		super(wallet, late);
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public Resident() {
 		super();
-		// TODO Auto-generated constructor stub
+
 	}
 
 	@Override
@@ -36,17 +36,14 @@ public class Resident extends Member {
 			paysum = (float) (numberOfDays * 0.10);
 
 		}
-		
+
 		if (numberOfDays > 60) {
 			LOGGER.info("residents pay 20cents for each day they keep a book after the initial 60days");
 			paysum = (float) ((60 * 0.1) + ((numberOfDays - 60) * 0.20));
 			LOGGER.trace("resident late : " + late);
 			late = false;
-
+			LOGGER.trace("resident late : " + late);
 		}
-
-		boolean test = wallet < paysum;
-		System.out.println("The resident will pay " + paysum + "wallet => " + wallet + " wallet < paysum = " + test);
 
 		LOGGER.info("Charge member if he have money enough");
 		if (wallet >= paysum)
@@ -57,7 +54,7 @@ public class Resident extends Member {
 		}
 
 		else {
-			LOGGER.info("You don't have enough money to pay!");
+			LOGGER.info("You don't have enough of money to pay!");
 
 		}
 

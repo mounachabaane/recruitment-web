@@ -6,14 +6,13 @@ import fr.d2factory.libraryapp.member.Member;
  * A simple representation of a book
  */
 public class Book {
-  private  String title;
-  private  String author;
-  private ISBN isbn;
-  private Member member;
-  
-  
+	private String title;
+	private String author;
+	private ISBN isbn;
+	private Member member;
 
-    public Book() {}
+	public Book() {
+	}
 
 	public Book(String title, String author, ISBN isbn) {
 		super();
@@ -58,7 +57,5 @@ public class Book {
 	public String toString() {
 		return "Book [title=" + title + ", author=" + author + ", isbn=" + isbn + ", member=" + member + "]";
 	}
-    
-    
-    
+
 }

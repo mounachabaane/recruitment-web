@@ -46,15 +46,11 @@ public class BookRepository implements BookRepositoryDao {
 
 	}
 
-	/**
-	 * 
-	 * @param isbnCode
-	 * @return book
-	 */
+	
 	@Override
 	public Book findBook(long isbnCode) {
 		Book book = new Book();
-		
+
 		book = availableBooks.entrySet().stream().filter(x -> x.getKey().isbnCode == isbnCode).map(x -> x.getValue())
 				.findFirst().orElse(new Book());
 
@@ -78,7 +74,6 @@ public class BookRepository implements BookRepositoryDao {
 				.filter(x -> x.getKey().getIsbn().isbnCode == book.getIsbn().isbnCode).map(x -> x.getValue())
 				.findFirst().orElse(null);
 
-		
 		return localDate;
 	}
 

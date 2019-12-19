@@ -1,11 +1,11 @@
 package fr.d2factory.libraryapp.book;
 
 public class ISBN {
-    long isbnCode;
+	long isbnCode;
 
-    public ISBN(long isbnCode) {
-        this.isbnCode = isbnCode;
-    }
+	public ISBN(long isbnCode) {
+		this.isbnCode = isbnCode;
+	}
 
 	public long getIsbnCode() {
 		return isbnCode;
@@ -17,9 +17,7 @@ public class ISBN {
 
 	public ISBN() {
 		super();
-		// TODO Auto-generated constructor stub
+
 	}
 
-	
-    
 }
