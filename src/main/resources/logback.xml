@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="fileAppender" class="ch.qos.logback.core.FileAppender">
+		<file>townsville-library.log</file>
+		<append>true</append>
+		<encoder>
+			<Pattern> %d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | %12(ID: %8mdc{id}) |
+				%5p | %logger{10} | %thread | %m%n</Pattern>
+		</encoder>
+	</appender>
+	
+	<root level="TRACE">
+		<appender-ref ref="fileAppender" />
+	</root>
+</configuration>

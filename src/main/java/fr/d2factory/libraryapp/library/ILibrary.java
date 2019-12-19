@@ -10,7 +10,7 @@ import java.time.LocalDate;
  *
  * The books are available via the {@link fr.d2factory.libraryapp.book.BookRepository}
  */
-public interface Library {
+public interface ILibrary {
 
     /**
      * A member is borrowing a book from our library.
