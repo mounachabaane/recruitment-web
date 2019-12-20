@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.d2factory.libraryapp.book.Book;
 import fr.d2factory.libraryapp.book.BookRepository;
 import fr.d2factory.libraryapp.book.BookRepositoryDao;
-import fr.d2factory.libraryapp.member.Member;
 import fr.d2factory.libraryapp.member.Resident;
 import fr.d2factory.libraryapp.member.Student;
 import fr.d2factory.libraryapp.utils.IdGenerator;
@@ -35,8 +34,8 @@ public class ILibraryTest {
 	// private ILibrary library = new Resident();
 	private BookRepositoryDao bookRepository = new BookRepository();
 	private static List<Book> books;
-	private Resident resident = new Resident(45, false);
-	private Student student = new Student(50, false, false);
+	private Resident resident = new Resident("Anna", 45, false);
+	private Student student = new Student("Alice", 50, false, false);
 	private IdGenerator idGenerator = new IdGenerator();
 	private static final Logger LOGGER = LoggerFactory.getLogger(ILibraryTest.class);
 
@@ -122,12 +121,11 @@ public class ILibraryTest {
 
 	) {
 		LOGGER.info("Testing: residents_pay_20cents_for_each_day_they_keep_a_book_after_the_initial_60days");
-		Member resident3 = new Resident(45, false);
 
 		int numberOfdays = 65;
 
-		resident3.payBook(numberOfdays);
-		float sum = 45 - resident3.getWallet();
+		resident.payBook(numberOfdays);
+		float sum = 45 - resident.getWallet();
 		float toPayexpected = (float) ((60 * 0.1) + (5 * 0.2));
 		assertEquals(toPayexpected, sum);
 	}

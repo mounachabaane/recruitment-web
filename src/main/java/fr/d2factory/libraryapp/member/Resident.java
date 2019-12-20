@@ -14,8 +14,8 @@ public class Resident extends Member {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Resident.class);
 
-	public Resident(float wallet, boolean late) {
-		super(wallet, late);
+	public Resident(String memberName, float wallet, boolean late) {
+		super(memberName, wallet, late);
 
 	}
 
@@ -40,7 +40,7 @@ public class Resident extends Member {
 		if (numberOfDays > 60) {
 			LOGGER.info("residents pay 20cents for each day they keep a book after the initial 60days");
 			paysum = (float) ((60 * 0.1) + ((numberOfDays - 60) * 0.20));
-			LOGGER.trace("resident late : " + late);
+			// LOGGER.trace("resident"+ +"late : " + late);
 			late = false;
 			LOGGER.trace("resident late : " + late);
 		}
@@ -66,7 +66,7 @@ public class Resident extends Member {
 		Book book;
 		List<Book> residentBorrowedBookList = getBookList();
 
-		LOGGER.info("check if the resident has a late book");
+		LOGGER.info("check if the resident " + memberName + " has a late book");
 		if (residentBorrowedBookList.stream().filter(
 				borrowedBook -> durationUtil.numberOfDays(bookRepositoryDao.findBorrowedBookDate(borrowedBook)) > 60)
 				.findFirst().orElse(null) != null) {
@@ -88,6 +88,8 @@ public class Resident extends Member {
 				bookRepositoryDao.deleteBook(book);
 				return book;
 			}
+
+			LOGGER.info("The book " + book.getTitle() + " is borrowod by " + memberName);
 		}
 
 		else {
@@ -104,7 +106,7 @@ public class Resident extends Member {
 
 		int numberOfDays = 0;
 		if (book.getIsbn() != null) {
-			LOGGER.info("Resident return the borrowed book : " + book.getTitle());
+			LOGGER.info("Resident " + memberName + " return the borrowed book : " + book.getTitle());
 
 			LocalDate borrowedAt = bookRepositoryDao.findBorrowedBookDate(book);
 			if (borrowedAt != null) {

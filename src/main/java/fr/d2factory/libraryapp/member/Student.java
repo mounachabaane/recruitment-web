@@ -13,8 +13,8 @@ public class Student extends Member {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Student.class);
 	private boolean freeDays;
 
-	public Student(float wallet, boolean late, boolean freeDays) {
-		super(wallet, late);
+	public Student(String memberName, float wallet, boolean late, boolean freeDays) {
+		super(memberName, wallet, late);
 		this.freeDays = freeDays;
 	}
 
@@ -68,7 +68,7 @@ public class Student extends Member {
 		List<Book> studentBorrowedBookList = getBookList();
 		Book book;
 
-		LOGGER.info("check if the student has a late book");
+		LOGGER.info("check if the student " + memberName + " has a late book");
 		if (studentBorrowedBookList.stream().filter(
 				borrowedBook -> durationUtil.numberOfDays(bookRepositoryDao.findBorrowedBookDate(borrowedBook)) > 30)
 				.findFirst().orElse(null) != null) {
@@ -89,6 +89,8 @@ public class Student extends Member {
 				bookRepositoryDao.deleteBook(book);
 
 			}
+
+			LOGGER.info("The book " + book.getTitle() + " is borrowod by " + memberName);
 		} else {
 			LOGGER.error("This member cannot borrow another book!");
 			throw new HasLateBooksException("You have already a late book!");
@@ -104,7 +106,7 @@ public class Student extends Member {
 		int numberOfDays = 0;
 		LocalDate borrowedAt = bookRepositoryDao.findBorrowedBookDate(book);
 		if (borrowedAt != null) {
-			LOGGER.info("The student want to return the book : " + book.getTitle());
+			LOGGER.info("The student " + memberName + "want to return the book : " + book.getTitle());
 			numberOfDays = durationUtil.numberOfDays(borrowedAt);
 
 			payBook(numberOfDays);

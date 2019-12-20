@@ -27,11 +27,11 @@ public class TownsvilleLibraryApp {
 		MDC.put("id", uuid);
 		System.out.println("*** Please check the log file townsville-library.log for debugging ***");
 		LOGGER.info("***Start testing from main****");
-		
+
 		BookRepositoryDao bookRepository = new BookRepository();
 
 		LOGGER.info("Testing with a resident member who has no late book");
-		Member resident = new Resident(600, false);
+		Member resident = new Resident("Jhon", 600, false);
 
 		resident.setBookRepositoryDao(bookRepository);
 

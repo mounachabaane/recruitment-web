@@ -17,6 +17,7 @@ public abstract class Member implements ILibrary {
 	/**
 	 * An initial sum of money the member has
 	 */
+	protected String memberName;
 	protected float wallet;
 	protected boolean late;
 	BookRepositoryDao bookRepositoryDao = new BookRepository();
@@ -31,6 +32,15 @@ public abstract class Member implements ILibrary {
 
 	public Member(float wallet, boolean late) {
 		super();
+		this.wallet = wallet;
+		this.late = late;
+	}
+	
+	
+
+	public Member(String memberName, float wallet, boolean late) {
+		super();
+		this.memberName = memberName;
 		this.wallet = wallet;
 		this.late = late;
 	}
@@ -83,4 +93,13 @@ public abstract class Member implements ILibrary {
 		this.bookRepositoryDao = bookRepositoryDao;
 	}
 
+	public String getMemberName() {
+		return memberName;
+	}
+
+	public void setMemberName(String memberName) {
+		this.memberName = memberName;
+	}
+
+	
 }
