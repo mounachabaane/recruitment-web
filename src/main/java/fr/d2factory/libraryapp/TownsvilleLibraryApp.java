@@ -51,6 +51,7 @@ public class TownsvilleLibraryApp {
 		LocalDate borrowedAt = LocalDate.parse("2019-10-01");
 		LOGGER.info("The resident trying to borrow a book with code : " + isbn);
 		Book borrowBook = resident.borrowBook(isbn, resident, borrowedAt);
+
 		LOGGER.info("borrowBook " + borrowBook.getTitle());
 
 		long isbn2 = 12;

@@ -22,6 +22,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.d2factory.libraryapp.book.Book;
 import fr.d2factory.libraryapp.book.BookRepository;
 import fr.d2factory.libraryapp.book.BookRepositoryDao;
+import fr.d2factory.libraryapp.exceptions.HasLateBooksException;
+import fr.d2factory.libraryapp.exceptions.HasNotEnoughMoneyException;
+import fr.d2factory.libraryapp.exceptions.NotFoundBookException;
 import fr.d2factory.libraryapp.member.Resident;
 import fr.d2factory.libraryapp.member.Student;
 import fr.d2factory.libraryapp.utils.IdGenerator;
@@ -187,6 +190,25 @@ public class ILibraryTest {
 			message = e.getMessage();
 		}
 		assert (message.equals("You don't have enough of money to pay!"));
+	}
+	
+	
+	@Test
+	void resident_cannot_borrow_book_beacause_its_not_found() {
+		LOGGER.info("Testing: members_cannot_borrow_book_if_they_have_late_books");
+		long isbn5 = 332645;
+		String message = "";
+	
+		LocalDate borrowedAt = LocalDate.parse("2019-12-15");
+		try {
+
+			Book borrowedBook = resident.borrowBook(isbn5, resident, borrowedAt);
+
+		} catch (NotFoundBookException e) {
+
+			message = e.getMessage();
+		}
+		assert (message.equals("The book you want to borrow is not found!"));
 	}
 
 }

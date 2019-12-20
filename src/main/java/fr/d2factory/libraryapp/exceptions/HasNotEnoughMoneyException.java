@@ -1,4 +1,4 @@
-package fr.d2factory.libraryapp.library;
+package fr.d2factory.libraryapp.exceptions;
 
 public class HasNotEnoughMoneyException extends RuntimeException {
 	private static final long serialVersionUID = 1L;

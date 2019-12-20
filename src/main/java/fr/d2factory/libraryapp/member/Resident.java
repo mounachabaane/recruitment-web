@@ -6,10 +6,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.d2factory.libraryapp.TownsvilleLibraryApp;
 import fr.d2factory.libraryapp.book.Book;
-import fr.d2factory.libraryapp.library.HasLateBooksException;
-import fr.d2factory.libraryapp.library.HasNotEnoughMoneyException;
+import fr.d2factory.libraryapp.exceptions.HasLateBooksException;
+import fr.d2factory.libraryapp.exceptions.HasNotEnoughMoneyException;
+import fr.d2factory.libraryapp.exceptions.NotFoundBookException;
 
 public class Resident extends Member {
 
@@ -68,7 +68,7 @@ public class Resident extends Member {
 	}
 
 	@Override
-	public Book borrowBook(long isbnCode, Member member, LocalDate borrowedAt) {
+	public Book borrowBook(long isbnCode, Member member, LocalDate borrowedAt) throws HasLateBooksException {
 
 		Book book;
 		List<Book> residentBorrowedBookList = getBookList();
@@ -94,18 +94,22 @@ public class Resident extends Member {
 				residentBorrowedBookList.add(book);
 				setBookList(residentBorrowedBookList);
 				bookRepositoryDao.deleteBook(book);
+				LOGGER.info("The book " + book.getTitle() + " is borrowod by " + memberName);
 				return book;
+
 			}
 
-			LOGGER.info("The book " + book.getTitle() + " is borrowod by " + memberName);
+			else {
+				LOGGER.info("The book " + book.getTitle() + " is not found");
+				throw new NotFoundBookException("The book you want to borrow is not found!");
+			}
+
 		}
 
 		else {
 			LOGGER.error("This member cannot borrow another book!");
 			throw new HasLateBooksException("You have already a late book!");
 		}
-
-		return book;
 
 	}
 

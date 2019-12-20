@@ -7,8 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.d2factory.libraryapp.book.Book;
-import fr.d2factory.libraryapp.library.HasLateBooksException;
-import fr.d2factory.libraryapp.library.HasNotEnoughMoneyException;
+import fr.d2factory.libraryapp.exceptions.HasLateBooksException;
+import fr.d2factory.libraryapp.exceptions.HasNotEnoughMoneyException;
+import fr.d2factory.libraryapp.exceptions.NotFoundBookException;
 
 public class Student extends Member {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Student.class);
@@ -95,12 +96,19 @@ public class Student extends Member {
 				bookRepositoryDao.deleteBook(book);
 
 			}
+			
+			else {
+				LOGGER.info("The book " + book.getTitle() + " is not found");
+				throw new NotFoundBookException("The book you want to borrow is not found!");
+			}
 
 			LOGGER.info("The book " + book.getTitle() + " is borrowod by " + memberName);
 		} else {
 			LOGGER.error("This member cannot borrow another book!");
 			throw new HasLateBooksException("You have already a late book!");
 		}
+
+		
 
 		return book;
 
