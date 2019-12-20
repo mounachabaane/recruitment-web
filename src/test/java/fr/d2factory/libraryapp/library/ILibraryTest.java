@@ -34,10 +34,16 @@ public class ILibraryTest {
 	// private ILibrary library = new Resident();
 	private BookRepositoryDao bookRepository = new BookRepository();
 	private static List<Book> books;
-	private Resident resident = new Resident("Anna", 45, false);
-	private Student student = new Student("Alice", 50, false, false);
+	private Resident resident = new Resident("Anna", 1200, false);
+	private Student student = new Student("Alice", 1500, false, false);
 	private IdGenerator idGenerator = new IdGenerator();
 	private static final Logger LOGGER = LoggerFactory.getLogger(ILibraryTest.class);
+
+	public static final int RSIDENT_PRICE_BEFORE_LATE = 10;
+	public static final int RESIDENT_PRICE_AFTER_LATE = 20;
+	public static final int STUDENT_PRICE = 10;
+	public static final int FREE_DAYS_DURATION = 15;
+	public static final int RESIDENT_DAYS_BEFORE_LATE = 60;
 
 	@BeforeEach
 	void setup() throws JsonParseException, JsonMappingException, IOException {
@@ -86,8 +92,8 @@ public class ILibraryTest {
 		int numberOfdays = 20;
 
 		resident.payBook(numberOfdays);
-		float sum = 45 - resident.getWallet();
-		assertEquals(20 * 0.1, sum);
+		float sum = 1200 - resident.getWallet();
+		assertEquals(numberOfdays * RSIDENT_PRICE_BEFORE_LATE, sum);
 
 	}
 
@@ -98,9 +104,9 @@ public class ILibraryTest {
 		student.setFreeDays(false);
 		student.payBook(numberofDays);
 
-		float pay = 50 - student.getWallet();
+		float pay = 1500 - student.getWallet();
 
-		assertEquals(String.format("%.2f", (30 * 0.1)), String.format("%.2f", pay));
+		assertEquals(numberofDays * STUDENT_PRICE, pay);
 
 	}
 
@@ -111,8 +117,8 @@ public class ILibraryTest {
 		int numberofDays = 22;
 		student.payBook(numberofDays);
 
-		float pay = 50 - student.getWallet();
-		assertEquals(String.format("%.2f", 0.7), String.format("%.2f", pay));
+		float pay = 1500 - student.getWallet();
+		assertEquals(((numberofDays - FREE_DAYS_DURATION) * STUDENT_PRICE), pay);
 
 	}
 
@@ -125,8 +131,9 @@ public class ILibraryTest {
 		int numberOfdays = 65;
 
 		resident.payBook(numberOfdays);
-		float sum = 45 - resident.getWallet();
-		float toPayexpected = (float) ((60 * 0.1) + (5 * 0.2));
+		float sum = 1200 - resident.getWallet();
+		float toPayexpected = (float) ((RESIDENT_DAYS_BEFORE_LATE * RSIDENT_PRICE_BEFORE_LATE)
+				+ ((numberOfdays - RESIDENT_DAYS_BEFORE_LATE) * RESIDENT_PRICE_AFTER_LATE));
 		assertEquals(toPayexpected, sum);
 	}
 
@@ -162,6 +169,24 @@ public class ILibraryTest {
 
 		assertNotEquals(borrowedAt, bookRepository.findBorrowedBookDate(borrowedBook));
 
+	}
+
+	@Test
+	void members_Has_Not_Enough_Of_Money_To_Pay_Book() {
+		LOGGER.info("Testing: members_cannot_borrow_book_if_they_have_late_books");
+		long isbn5 = 332645646;
+		String message = "";
+		resident.setWallet(30);
+		LocalDate borrowedAt = LocalDate.parse("2019-12-15");
+		try {
+
+			Book borrowedBook = resident.borrowBook(isbn5, resident, borrowedAt);
+			resident.returnBook(borrowedBook, resident);
+		} catch (HasNotEnoughMoneyException e) {
+
+			message = e.getMessage();
+		}
+		assert (message.equals("You don't have enough of money to pay!"));
 	}
 
 }

@@ -9,10 +9,15 @@ import org.slf4j.LoggerFactory;
 import fr.d2factory.libraryapp.TownsvilleLibraryApp;
 import fr.d2factory.libraryapp.book.Book;
 import fr.d2factory.libraryapp.library.HasLateBooksException;
+import fr.d2factory.libraryapp.library.HasNotEnoughMoneyException;
 
 public class Resident extends Member {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Resident.class);
+
+	public static final int PRICE_BEFORE_LATE = 10;
+	public static final int PRICE_AFTER_LATE = 20;
+	public static final int DAYS_BEFORE_LATE = 60;
 
 	public Resident(String memberName, float wallet, boolean late) {
 		super(memberName, wallet, late);
@@ -29,17 +34,18 @@ public class Resident extends Member {
 		LOGGER.trace("numberOfDays : " + numberOfDays);
 		float paysum = 0;
 
-		if (numberOfDays <= 60)
+		if (numberOfDays <= DAYS_BEFORE_LATE)
 
 		{
 			LOGGER.info("resident is taxed 10cents for each day he keep a book");
-			paysum = (float) (numberOfDays * 0.10);
+			paysum = (float) (numberOfDays * PRICE_BEFORE_LATE);
 
 		}
 
-		if (numberOfDays > 60) {
+		else {
 			LOGGER.info("residents pay 20cents for each day they keep a book after the initial 60days");
-			paysum = (float) ((60 * 0.1) + ((numberOfDays - 60) * 0.20));
+			paysum = (float) ((DAYS_BEFORE_LATE * PRICE_BEFORE_LATE)
+					+ ((numberOfDays - DAYS_BEFORE_LATE) * PRICE_AFTER_LATE));
 			// LOGGER.trace("resident"+ +"late : " + late);
 			late = false;
 			LOGGER.trace("resident late : " + late);
@@ -55,6 +61,7 @@ public class Resident extends Member {
 
 		else {
 			LOGGER.info("You don't have enough of money to pay!");
+			throw new HasNotEnoughMoneyException("You don't have enough of money to pay!");
 
 		}
 
@@ -67,8 +74,9 @@ public class Resident extends Member {
 		List<Book> residentBorrowedBookList = getBookList();
 
 		LOGGER.info("check if the resident " + memberName + " has a late book");
-		if (residentBorrowedBookList.stream().filter(
-				borrowedBook -> durationUtil.numberOfDays(bookRepositoryDao.findBorrowedBookDate(borrowedBook)) > 60)
+		if (residentBorrowedBookList.stream()
+				.filter(borrowedBook -> durationUtil
+						.numberOfDays(bookRepositoryDao.findBorrowedBookDate(borrowedBook)) > DAYS_BEFORE_LATE)
 				.findFirst().orElse(null) != null) {
 
 			late = true;

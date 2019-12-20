@@ -8,10 +8,14 @@ import org.slf4j.LoggerFactory;
 
 import fr.d2factory.libraryapp.book.Book;
 import fr.d2factory.libraryapp.library.HasLateBooksException;
+import fr.d2factory.libraryapp.library.HasNotEnoughMoneyException;
 
 public class Student extends Member {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Student.class);
 	private boolean freeDays;
+	public static final int STUDENT_PRICE = 10;
+	public static final int FREE_DAYS_DURATION = 15;
+	public static final int DAYS_BEFORE_LATE = 30;
 
 	public Student(String memberName, float wallet, boolean late, boolean freeDays) {
 		super(memberName, wallet, late);
@@ -31,19 +35,19 @@ public class Student extends Member {
 
 		LOGGER.info("students pay 10 cents the first 30days");
 		if (!this.freeDays) {
-			pay = (float) (pay + (numberOfDays * 0.10));
+			pay = (float) (pay + (numberOfDays * STUDENT_PRICE));
 
 		}
 
 		LOGGER.info("students in 1st year are not taxed for the first 15days");
 		if (this.freeDays) {
 
-			pay = (float) (pay + (numberOfDays - 15) * 0.10);
+			pay = (float) (pay + (numberOfDays - FREE_DAYS_DURATION) * STUDENT_PRICE);
 
 		}
 
 		// check if the book returned if it was late
-		if (numberOfDays > 30) {
+		if (numberOfDays > DAYS_BEFORE_LATE) {
 			LOGGER.info("The book returned if it was late");
 			late = false;
 		}
@@ -58,6 +62,7 @@ public class Student extends Member {
 
 		else {
 			LOGGER.info("You don't have enough of money to pay!");
+			throw new HasNotEnoughMoneyException("You don't have enough of money to pay!");
 
 		}
 
@@ -69,8 +74,9 @@ public class Student extends Member {
 		Book book;
 
 		LOGGER.info("check if the student " + memberName + " has a late book");
-		if (studentBorrowedBookList.stream().filter(
-				borrowedBook -> durationUtil.numberOfDays(bookRepositoryDao.findBorrowedBookDate(borrowedBook)) > 30)
+		if (studentBorrowedBookList.stream()
+				.filter(borrowedBook -> durationUtil
+						.numberOfDays(bookRepositoryDao.findBorrowedBookDate(borrowedBook)) > DAYS_BEFORE_LATE)
 				.findFirst().orElse(null) != null) {
 			late = true;
 		}
