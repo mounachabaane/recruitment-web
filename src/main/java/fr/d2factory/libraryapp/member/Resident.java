@@ -32,30 +32,32 @@ public class Resident extends Member {
 	@Override
 	public void payBook(int numberOfDays) {
 		LOGGER.trace("numberOfDays : " + numberOfDays);
-		float paysum = 0;
+		float bill = 0;
 
 		if (numberOfDays <= DAYS_BEFORE_LATE)
 
 		{
 			LOGGER.info("resident is taxed 10cents for each day he keep a book");
-			paysum = numberOfDays * PRICE_BEFORE_LATE;
+			bill = numberOfDays * PRICE_BEFORE_LATE;
 
 		}
 
 		else {
 			LOGGER.info("residents pay 20cents for each day they keep a book after the initial 60days");
-			paysum = (DAYS_BEFORE_LATE * PRICE_BEFORE_LATE) + ((numberOfDays - DAYS_BEFORE_LATE) * PRICE_AFTER_LATE);
+			bill = (DAYS_BEFORE_LATE * PRICE_BEFORE_LATE) + ((numberOfDays - DAYS_BEFORE_LATE) * PRICE_AFTER_LATE);
 			// LOGGER.trace("resident"+ +"late : " + late);
 			late = false;
 			LOGGER.trace("resident late : " + late);
 		}
 
+		LOGGER.debug("member bill is: " + bill);
 		LOGGER.info("Charge member if he have money enough");
-		if (wallet >= paysum)
+		if (wallet >= bill)
 
 		{
-			wallet = wallet - paysum;
-			LOGGER.info("new member wallet = " + wallet);
+			LOGGER.debug("initial member wallet = " + wallet);
+			wallet = wallet - bill;
+			LOGGER.debug("new member wallet = " + wallet);
 		}
 
 		else {

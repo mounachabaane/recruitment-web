@@ -123,7 +123,7 @@ public class ILibraryTest {
 		student.payBook(numberofDays);
 
 		float pay = initWallet - student.getWallet();
-	
+
 		assertEquals((String.format("%.02f", (numberofDays - FREE_DAYS_DURATION) * STUDENT_PRICE)),
 				String.format("%.02f", pay));
 
@@ -180,7 +180,7 @@ public class ILibraryTest {
 
 	@Test
 	void members_Has_Not_Enough_Of_Money_To_Pay_Book() {
-		LOGGER.info("Testing: members_cannot_borrow_book_if_they_have_late_books");
+		LOGGER.info("Testing: members_Has_Not_Enough_Of_Money_To_Pay_Book");
 		long isbn5 = 332645646;
 		String message = "";
 		resident.setWallet(0.2f);

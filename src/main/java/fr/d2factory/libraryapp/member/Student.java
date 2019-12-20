@@ -31,21 +31,22 @@ public class Student extends Member {
 	@Override
 	public void payBook(int numberOfDays) {
 
-		LOGGER.trace("numberOfDays : " + numberOfDays);
-		float pay = 0f;
+		LOGGER.debug("numberOfDays : " + numberOfDays);
+		float bill = 0f;
 
-		LOGGER.info("students pay 10 cents the first 30days");
 		if (!this.freeDays) {
-			pay = pay + (numberOfDays * STUDENT_PRICE);
+			LOGGER.info("students pay 10 cents the first 30days");
+			bill = bill + (numberOfDays * STUDENT_PRICE);
 
 		}
 
-		LOGGER.info("students in 1st year are not taxed for the first 15days");
 		if (this.freeDays) {
-
-			pay = (numberOfDays - FREE_DAYS_DURATION) * STUDENT_PRICE;
+			LOGGER.info("students in 1st year are not taxed for the first 15days");
+			bill = (numberOfDays - FREE_DAYS_DURATION) * STUDENT_PRICE;
 
 		}
+
+		LOGGER.debug("member bill is: " + bill);
 
 		// check if the book returned if it was late
 		if (numberOfDays > DAYS_BEFORE_LATE) {
@@ -54,12 +55,13 @@ public class Student extends Member {
 		}
 
 		// Charge member if he have money enough
-		LOGGER.info("Charge member if he have money enough");
-		if (wallet >= pay)
+		LOGGER.info("Charge the member if he have money enough");
+		if (wallet >= bill)
 
 		{
-			wallet = wallet - pay;
-			LOGGER.info("new member wallet = " + wallet);
+			LOGGER.debug("initial member wallet = " + wallet);
+			wallet = wallet - bill;
+			LOGGER.debug("new member wallet = " + wallet);
 		}
 
 		else {
