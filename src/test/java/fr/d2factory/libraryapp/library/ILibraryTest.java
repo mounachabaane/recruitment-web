@@ -37,14 +37,14 @@ public class ILibraryTest {
 	// private ILibrary library = new Resident();
 	private BookRepositoryDao bookRepository = new BookRepository();
 	private static List<Book> books;
-	private Resident resident = new Resident("Anna", 1200, false);
-	private Student student = new Student("Alice", 1500, false, false);
+	private Resident resident = new Resident("Anna", 60, false);
+	private Student student = new Student("Alice", 50, false, false);
 	private IdGenerator idGenerator = new IdGenerator();
 	private static final Logger LOGGER = LoggerFactory.getLogger(ILibraryTest.class);
 
-	public static final int RSIDENT_PRICE_BEFORE_LATE = 10;
-	public static final int RESIDENT_PRICE_AFTER_LATE = 20;
-	public static final int STUDENT_PRICE = 10;
+	public static final float RSIDENT_PRICE_BEFORE_LATE = 0.1f;
+	public static final float RESIDENT_PRICE_AFTER_LATE = 0.2f;
+	public static final float STUDENT_PRICE = 0.1f;
 	public static final int FREE_DAYS_DURATION = 15;
 	public static final int RESIDENT_DAYS_BEFORE_LATE = 60;
 
@@ -93,9 +93,9 @@ public class ILibraryTest {
 	void residents_are_taxed_10cents_for_each_day_they_keep_a_book() {
 		LOGGER.info("Testing: residents_are_taxed_10cents_for_each_day_they_keep_a_book");
 		int numberOfdays = 20;
-
+		float initWallet = resident.getWallet();
 		resident.payBook(numberOfdays);
-		float sum = 1200 - resident.getWallet();
+		float sum = initWallet - resident.getWallet();
 		assertEquals(numberOfdays * RSIDENT_PRICE_BEFORE_LATE, sum);
 
 	}
@@ -103,11 +103,12 @@ public class ILibraryTest {
 	@Test
 	void students_pay_10_cents_the_first_30days() {
 		LOGGER.info("Testing: students_pay_10_cents_the_first_30days");
+		float initWallet = student.getWallet();
 		int numberofDays = 30;
 		student.setFreeDays(false);
 		student.payBook(numberofDays);
 
-		float pay = 1500 - student.getWallet();
+		float pay = initWallet - student.getWallet();
 
 		assertEquals(numberofDays * STUDENT_PRICE, pay);
 
@@ -117,11 +118,14 @@ public class ILibraryTest {
 	void students_in_1st_year_are_not_taxed_for_the_first_15days() {
 		LOGGER.info("Testing: students_in_1st_year_are_not_taxed_for_the_first_15days");
 		student.setFreeDays(true);
+		float initWallet = student.getWallet();
 		int numberofDays = 22;
 		student.payBook(numberofDays);
 
-		float pay = 1500 - student.getWallet();
-		assertEquals(((numberofDays - FREE_DAYS_DURATION) * STUDENT_PRICE), pay);
+		float pay = initWallet - student.getWallet();
+	
+		assertEquals((String.format("%.02f", (numberofDays - FREE_DAYS_DURATION) * STUDENT_PRICE)),
+				String.format("%.02f", pay));
 
 	}
 
@@ -130,11 +134,11 @@ public class ILibraryTest {
 
 	) {
 		LOGGER.info("Testing: residents_pay_20cents_for_each_day_they_keep_a_book_after_the_initial_60days");
-
+		float initWallet = resident.getWallet();
 		int numberOfdays = 65;
 
 		resident.payBook(numberOfdays);
-		float sum = 1200 - resident.getWallet();
+		float sum = initWallet - resident.getWallet();
 		float toPayexpected = (float) ((RESIDENT_DAYS_BEFORE_LATE * RSIDENT_PRICE_BEFORE_LATE)
 				+ ((numberOfdays - RESIDENT_DAYS_BEFORE_LATE) * RESIDENT_PRICE_AFTER_LATE));
 		assertEquals(toPayexpected, sum);
@@ -179,7 +183,7 @@ public class ILibraryTest {
 		LOGGER.info("Testing: members_cannot_borrow_book_if_they_have_late_books");
 		long isbn5 = 332645646;
 		String message = "";
-		resident.setWallet(30);
+		resident.setWallet(0.2f);
 		LocalDate borrowedAt = LocalDate.parse("2019-12-15");
 		try {
 
@@ -191,14 +195,13 @@ public class ILibraryTest {
 		}
 		assert (message.equals("You don't have enough of money to pay!"));
 	}
-	
-	
+
 	@Test
 	void resident_cannot_borrow_book_beacause_its_not_found() {
 		LOGGER.info("Testing: members_cannot_borrow_book_if_they_have_late_books");
 		long isbn5 = 332645;
 		String message = "";
-	
+
 		LocalDate borrowedAt = LocalDate.parse("2019-12-15");
 		try {
 

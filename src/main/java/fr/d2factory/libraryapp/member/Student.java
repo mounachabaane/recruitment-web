@@ -14,7 +14,7 @@ import fr.d2factory.libraryapp.exceptions.NotFoundBookException;
 public class Student extends Member {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Student.class);
 	private boolean freeDays;
-	public static final int STUDENT_PRICE = 10;
+	public static final float STUDENT_PRICE = 0.1f;
 	public static final int FREE_DAYS_DURATION = 15;
 	public static final int DAYS_BEFORE_LATE = 30;
 
@@ -32,18 +32,18 @@ public class Student extends Member {
 	public void payBook(int numberOfDays) {
 
 		LOGGER.trace("numberOfDays : " + numberOfDays);
-		float pay = 0;
+		float pay = 0f;
 
 		LOGGER.info("students pay 10 cents the first 30days");
 		if (!this.freeDays) {
-			pay = (float) (pay + (numberOfDays * STUDENT_PRICE));
+			pay = pay + (numberOfDays * STUDENT_PRICE);
 
 		}
 
 		LOGGER.info("students in 1st year are not taxed for the first 15days");
 		if (this.freeDays) {
 
-			pay = (float) (pay + (numberOfDays - FREE_DAYS_DURATION) * STUDENT_PRICE);
+			pay = (numberOfDays - FREE_DAYS_DURATION) * STUDENT_PRICE;
 
 		}
 
@@ -59,6 +59,7 @@ public class Student extends Member {
 
 		{
 			wallet = wallet - pay;
+			LOGGER.info("new member wallet = " + wallet);
 		}
 
 		else {
@@ -96,7 +97,7 @@ public class Student extends Member {
 				bookRepositoryDao.deleteBook(book);
 
 			}
-			
+
 			else {
 				LOGGER.info("The book " + book.getTitle() + " is not found");
 				throw new NotFoundBookException("The book you want to borrow is not found!");
@@ -107,8 +108,6 @@ public class Student extends Member {
 			LOGGER.error("This member cannot borrow another book!");
 			throw new HasLateBooksException("You have already a late book!");
 		}
-
-		
 
 		return book;
 

@@ -15,8 +15,8 @@ public class Resident extends Member {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Resident.class);
 
-	public static final int PRICE_BEFORE_LATE = 10;
-	public static final int PRICE_AFTER_LATE = 20;
+	public static final float PRICE_BEFORE_LATE = 0.1f;
+	public static final float PRICE_AFTER_LATE = 0.2f;
 	public static final int DAYS_BEFORE_LATE = 60;
 
 	public Resident(String memberName, float wallet, boolean late) {
@@ -38,14 +38,13 @@ public class Resident extends Member {
 
 		{
 			LOGGER.info("resident is taxed 10cents for each day he keep a book");
-			paysum = (float) (numberOfDays * PRICE_BEFORE_LATE);
+			paysum = numberOfDays * PRICE_BEFORE_LATE;
 
 		}
 
 		else {
 			LOGGER.info("residents pay 20cents for each day they keep a book after the initial 60days");
-			paysum = (float) ((DAYS_BEFORE_LATE * PRICE_BEFORE_LATE)
-					+ ((numberOfDays - DAYS_BEFORE_LATE) * PRICE_AFTER_LATE));
+			paysum = (DAYS_BEFORE_LATE * PRICE_BEFORE_LATE) + ((numberOfDays - DAYS_BEFORE_LATE) * PRICE_AFTER_LATE);
 			// LOGGER.trace("resident"+ +"late : " + late);
 			late = false;
 			LOGGER.trace("resident late : " + late);
@@ -56,7 +55,7 @@ public class Resident extends Member {
 
 		{
 			wallet = wallet - paysum;
-
+			LOGGER.info("new member wallet = " + wallet);
 		}
 
 		else {

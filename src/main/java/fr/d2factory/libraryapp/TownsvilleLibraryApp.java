@@ -31,7 +31,7 @@ public class TownsvilleLibraryApp {
 		BookRepositoryDao bookRepository = new BookRepository();
 
 		LOGGER.info("Testing with a resident member who has no late book");
-		Member resident = new Resident("Jhon", 1300, false);
+		Member resident = new Resident("Jhon", 30, false);
 
 		resident.setBookRepositoryDao(bookRepository);
 
