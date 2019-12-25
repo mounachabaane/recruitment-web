@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fr.d2factory.libraryapp.TownsvilleLibraryApp;
 import fr.d2factory.libraryapp.book.Book;
 import fr.d2factory.libraryapp.book.BookRepository;
 import fr.d2factory.libraryapp.book.IBookRepositoryDao;
@@ -305,5 +306,18 @@ public class ILibraryTest {
 		assert (message.equals("You don't have enough of money to pay!"));
 
 	}
+	
+	/**
+	 * this test is for main method
+	 */
+	@Test
+    public void testMain() {
+		
+        String [] args = {};
+      
+        TownsvilleLibraryApp.main(args);
+    }
+    
+	
 
 }

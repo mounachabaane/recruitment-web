@@ -48,11 +48,11 @@ public class TownsvilleLibraryApp {
 		bookRepository.addBooks(books);
 
 		long isbn = 13;
-		LocalDate borrowedAt = LocalDate.parse("2019-10-01");
+		LocalDate borrowedAt = LocalDate.parse("2019-12-13");
 		LOGGER.info("The resident trying to borrow a book with code : " + isbn);
 		Book borrowBook = resident.borrowBook(isbn, resident, borrowedAt);
 
-		LOGGER.info("borrowBook " + borrowBook.getTitle());
+		LOGGER.info("borrowed Book : " + borrowBook.toString());
 
 		long isbn2 = 12;
 		LocalDate borrowedAt2 = LocalDate.parse("2019-12-12");
@@ -65,11 +65,7 @@ public class TownsvilleLibraryApp {
 		LOGGER.info("Borrowed date before returning the book : " + bookRepository.findBorrowedBookDate(borrowBook));
 		LocalDate borrowedAtafter = bookRepository.findBorrowedBookDate(borrowBook);
 
-		long isbn3 = 14;
-		LocalDate borrowedAt3 = LocalDate.parse("2019-12-28");
-		LOGGER.info("The resident trying to borrow a book with code : " + isbn3);
-		Book borrowedBook3 = resident.borrowBook(isbn3, resident, borrowedAt3);
-		LOGGER.info("borrowedAt3 " + borrowedBook3.getTitle());
+		
 
 	}
 }
