@@ -173,7 +173,7 @@ public class ILibraryTest {
 		LOGGER.info("Testing: resident_return_borrowed_book_if_it_available");
 		long isbn2 = 465789453;
 
-		LocalDate borrowedAt = LocalDate.parse("2019-12-15");
+		LocalDate borrowedAt = LocalDate.parse("2019-10-02");
 
 		Book borrowedBook = resident.borrowBook(isbn2, resident, borrowedAt);
 
@@ -204,8 +204,8 @@ public class ILibraryTest {
 	}
 
 	@Test
-	void resident_cannot_borrow_book_beacause_its_not_found() {
-		LOGGER.info("Testing: resident_cannot_borrow_book_beacause_its_not_found");
+	void resident_cannot_borrow_book_because_its_not_found() {
+		LOGGER.info("Testing: resident_cannot_borrow_book_because_its_not_found");
 		long isbn5 = 332645;
 		String message = "";
 
@@ -274,7 +274,7 @@ public class ILibraryTest {
 		LOGGER.info("Testing: student_return_borrowed_book_if_it_available");
 		long isbn2 = 465789453;
 
-		LocalDate borrowedAt = LocalDate.parse("2019-12-08");
+		LocalDate borrowedAt = LocalDate.parse("2019-10-01");
 
 		Book borrowedBook = student.borrowBook(isbn2, student, borrowedAt);
 
