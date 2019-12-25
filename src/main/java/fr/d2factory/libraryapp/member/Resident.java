@@ -44,9 +44,8 @@ public class Resident extends Member {
 		else {
 			LOGGER.info("residents pay 20cents for each day they keep a book after the initial 60days");
 			bill = (DAYS_BEFORE_LATE * PRICE_BEFORE_LATE) + ((numberOfDays - DAYS_BEFORE_LATE) * PRICE_AFTER_LATE);
-			// LOGGER.trace("resident"+ +"late : " + late);
-			late = false;
-			LOGGER.trace("resident late : " + late);
+			
+
 		}
 
 		LOGGER.debug("member bill is: " + bill);
@@ -133,6 +132,11 @@ public class Resident extends Member {
 				book.setMember(null);
 
 				bookList.remove(book);
+
+				if (numberOfDays > DAYS_BEFORE_LATE) {
+					late = false;
+					LOGGER.trace("resident late : " + late);
+				}
 
 			}
 

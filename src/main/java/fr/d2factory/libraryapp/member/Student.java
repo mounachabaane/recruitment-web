@@ -47,12 +47,6 @@ public class Student extends Member {
 
 		LOGGER.debug("member bill is: " + bill);
 
-		// check if the book returned if it was late
-		if (numberOfDays > DAYS_BEFORE_LATE) {
-			LOGGER.info("The book returned if it was late");
-			late = false;
-		}
-
 		// Charge member if he have money enough
 		LOGGER.info("Charge the member if he have money enough");
 		if (wallet >= bill)
@@ -83,6 +77,7 @@ public class Student extends Member {
 				.findFirst().orElse(null) != null) {
 			late = true;
 		}
+
 		LOGGER.debug("member late is: " + late);
 		if (!late) {
 			LOGGER.info("check if the book is available ");
@@ -127,6 +122,11 @@ public class Student extends Member {
 
 			book.setMember(null);
 			bookList.remove(book);
+
+			if (numberOfDays > DAYS_BEFORE_LATE) {
+
+				late = false;
+			}
 		}
 
 	}
