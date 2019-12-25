@@ -5,7 +5,7 @@ import java.util.List;
 
 import fr.d2factory.libraryapp.book.Book;
 import fr.d2factory.libraryapp.book.BookRepository;
-import fr.d2factory.libraryapp.book.BookRepositoryDao;
+import fr.d2factory.libraryapp.book.IBookRepositoryDao;
 import fr.d2factory.libraryapp.library.ILibrary;
 import fr.d2factory.libraryapp.utils.DurationUtil;
 
@@ -20,8 +20,8 @@ public abstract class Member implements ILibrary {
 	protected String memberName;
 	protected float wallet;
 	protected boolean late;
-	BookRepositoryDao bookRepositoryDao = new BookRepository();
-	private List<Book> bookList = new ArrayList<Book>();
+	IBookRepositoryDao bookRepositoryDao = new BookRepository();
+	protected List<Book> bookList = new ArrayList<Book>();
 	protected DurationUtil durationUtil = new DurationUtil();
 
 	
@@ -85,11 +85,11 @@ public abstract class Member implements ILibrary {
 		this.durationUtil = durationUtil;
 	}
 
-	public BookRepositoryDao getBookRepositoryDao() {
+	public IBookRepositoryDao getBookRepositoryDao() {
 		return bookRepositoryDao;
 	}
 
-	public void setBookRepositoryDao(BookRepositoryDao bookRepositoryDao) {
+	public void setBookRepositoryDao(IBookRepositoryDao bookRepositoryDao) {
 		this.bookRepositoryDao = bookRepositoryDao;
 	}
 

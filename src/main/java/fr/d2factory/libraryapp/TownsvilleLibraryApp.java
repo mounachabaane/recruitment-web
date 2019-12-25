@@ -10,7 +10,7 @@ import org.slf4j.MDC;
 
 import fr.d2factory.libraryapp.book.Book;
 import fr.d2factory.libraryapp.book.BookRepository;
-import fr.d2factory.libraryapp.book.BookRepositoryDao;
+import fr.d2factory.libraryapp.book.IBookRepositoryDao;
 import fr.d2factory.libraryapp.book.ISBN;
 import fr.d2factory.libraryapp.member.Member;
 import fr.d2factory.libraryapp.member.Resident;
@@ -28,7 +28,7 @@ public class TownsvilleLibraryApp {
 		System.out.println("*** Please check the log file townsville-library.log for debugging ***");
 		LOGGER.info("***Start testing from main****");
 
-		BookRepositoryDao bookRepository = new BookRepository();
+		IBookRepositoryDao bookRepository = new BookRepository();
 
 		LOGGER.info("Testing with a resident member who has no late book");
 		Member resident = new Resident("Jhon", 30, false);

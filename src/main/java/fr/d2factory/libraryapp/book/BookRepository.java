@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * The book repository emulates a database via 2 HashMaps
  */
-public class BookRepository implements BookRepositoryDao {
+public class BookRepository implements IBookRepositoryDao {
 	private Map<ISBN, Book> availableBooks = new HashMap<>();
 	private Map<Book, LocalDate> borrowedBooks = new HashMap<>();
 
@@ -46,7 +46,6 @@ public class BookRepository implements BookRepositoryDao {
 
 	}
 
-	
 	@Override
 	public Book findBook(long isbnCode) {
 		Book book = new Book();
@@ -75,22 +74,6 @@ public class BookRepository implements BookRepositoryDao {
 				.findFirst().orElse(null);
 
 		return localDate;
-	}
-
-	public Map<ISBN, Book> getAvailableBooks() {
-		return availableBooks;
-	}
-
-	public void setAvailableBooks(Map<ISBN, Book> availableBooks) {
-		this.availableBooks = availableBooks;
-	}
-
-	public Map<Book, LocalDate> getBorrowedBooks() {
-		return borrowedBooks;
-	}
-
-	public void setBorrowedBooks(Map<Book, LocalDate> borrowedBooks) {
-		this.borrowedBooks = borrowedBooks;
 	}
 
 	@Override

@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.d2factory.libraryapp.book.Book;
 import fr.d2factory.libraryapp.book.BookRepository;
-import fr.d2factory.libraryapp.book.BookRepositoryDao;
+import fr.d2factory.libraryapp.book.IBookRepositoryDao;
 import fr.d2factory.libraryapp.exceptions.HasLateBooksException;
 import fr.d2factory.libraryapp.exceptions.HasNotEnoughMoneyException;
 import fr.d2factory.libraryapp.exceptions.NotFoundBookException;
@@ -35,7 +35,7 @@ import fr.d2factory.libraryapp.utils.IdGenerator;
 
 public class ILibraryTest {
 	// private ILibrary library = new Resident();
-	private BookRepositoryDao bookRepository = new BookRepository();
+	private IBookRepositoryDao bookRepository = new BookRepository();
 	private static List<Book> books;
 	private Resident resident = new Resident("Anna", 60, false);
 	private Student student = new Student("Alice", 50, false, false);
@@ -62,6 +62,10 @@ public class ILibraryTest {
 		resident.setBookRepositoryDao(bookRepository);
 		student.setBookRepositoryDao(bookRepository);
 		LOGGER.info("Runing junit tests");
+		LOGGER.info(
+				"to check jaCoCo Report, please go to /townsville-library/target/site/jacoco/index.html and choose open with <<Web Browser>>");
+		LOGGER.info(
+				"JaCoCo is an actively developed line coverage tool, that is used to measure how many lines of our code are tested. ");
 	}
 
 	@Test
@@ -72,6 +76,8 @@ public class ILibraryTest {
 		LocalDate borrowedAt = LocalDate.parse("2019-12-17");
 		Book book = resident.borrowBook(isbnCode, resident, borrowedAt);
 		assertEquals(isbnCode, book.getIsbn().getIsbnCode());
+		assertEquals(true, resident.getBookList().contains(book));
+		assertEquals(resident.toString(), book.getMember().toString());
 
 	}
 
@@ -145,15 +151,15 @@ public class ILibraryTest {
 	}
 
 	@Test
-	void members_cannot_borrow_book_if_they_have_late_books() {
-		LOGGER.info("Testing: members_cannot_borrow_book_if_they_have_late_books");
+	void residents_cannot_borrow_book_if_they_have_late_books() {
+		LOGGER.info("Testing:residents_cannot_borrow_book_if_they_have_late_books");
 		long isbn5 = 332645646;
 		String message = "";
 		resident.setLate(true);
 		LocalDate borrowedAt = LocalDate.parse("2019-10-01");
 		try {
 
-			Book borrowedBook = resident.borrowBook(isbn5, resident, borrowedAt);
+			resident.borrowBook(isbn5, resident, borrowedAt);
 		} catch (HasLateBooksException e) {
 
 			// assert (e.getMessage().equals("You already have a book that are late"));
@@ -163,11 +169,11 @@ public class ILibraryTest {
 	}
 
 	@Test
-	void return_borrowed_book_if_it_available() {
-		LOGGER.info("Testing: return_borrowed_book_if_it_available");
+	void resident_return_borrowed_book_if_it_available() {
+		LOGGER.info("Testing: resident_return_borrowed_book_if_it_available");
 		long isbn2 = 465789453;
 
-		LocalDate borrowedAt = LocalDate.parse("2019-10-08");
+		LocalDate borrowedAt = LocalDate.parse("2019-12-15");
 
 		Book borrowedBook = resident.borrowBook(isbn2, resident, borrowedAt);
 
@@ -175,12 +181,13 @@ public class ILibraryTest {
 		resident.returnBook(borrowedBook, resident);
 
 		assertNotEquals(borrowedAt, bookRepository.findBorrowedBookDate(borrowedBook));
+		assertEquals(false, resident.getBookList().contains(borrowedBook));
 
 	}
 
 	@Test
-	void members_Has_Not_Enough_Of_Money_To_Pay_Book() {
-		LOGGER.info("Testing: members_Has_Not_Enough_Of_Money_To_Pay_Book");
+	void resident_Has_Not_Enough_Of_Money_To_Pay_Book() {
+		LOGGER.info("Testing: resident_Has_Not_Enough_Of_Money_To_Pay_Book");
 		long isbn5 = 332645646;
 		String message = "";
 		resident.setWallet(0.2f);
@@ -198,20 +205,105 @@ public class ILibraryTest {
 
 	@Test
 	void resident_cannot_borrow_book_beacause_its_not_found() {
-		LOGGER.info("Testing: members_cannot_borrow_book_if_they_have_late_books");
+		LOGGER.info("Testing: resident_cannot_borrow_book_beacause_its_not_found");
 		long isbn5 = 332645;
 		String message = "";
 
-		LocalDate borrowedAt = LocalDate.parse("2019-12-15");
+		LocalDate borrowedAt = LocalDate.parse("2019-12-22");
 		try {
 
-			Book borrowedBook = resident.borrowBook(isbn5, resident, borrowedAt);
+			resident.borrowBook(isbn5, resident, borrowedAt);
 
 		} catch (NotFoundBookException e) {
 
 			message = e.getMessage();
 		}
 		assert (message.equals("The book you want to borrow is not found!"));
+	}
+
+	@Test
+	void student_can_borrow_a_book_if_book_is_available() {
+		LOGGER.info("Testing: student_can_borrow_a_book_if_book_is_available");
+
+		long isbnCode = 46578964;
+		LocalDate borrowedAt = LocalDate.parse("2019-12-17");
+		Book book = student.borrowBook(isbnCode, student, borrowedAt);
+		assertEquals(isbnCode, book.getIsbn().getIsbnCode());
+		assertEquals(student.toString(), book.getMember().toString());
+
+	}
+
+	@Test
+	void student_cannot_borrow_book_beacause_its_not_found() {
+		LOGGER.info("Testing: student_cannot_borrow_book_beacause_its_not_found");
+		long isbn5 = 3326;
+		String message = "";
+
+		LocalDate borrowedAt = LocalDate.parse("2019-12-15");
+		try {
+
+			student.borrowBook(isbn5, student, borrowedAt);
+
+		} catch (NotFoundBookException e) {
+
+			message = e.getMessage();
+		}
+		assert (message.equals("The book you want to borrow is not found!"));
+	}
+
+	@Test
+	void student_cannot_borrow_book_if_they_have_late_books() {
+		LOGGER.info("Testing: student_cannot_borrow_book_if_they_have_late_books");
+		long isbn5 = 332645646;
+		String message = "";
+		student.setLate(true);
+		LocalDate borrowedAt = LocalDate.parse("2019-10-01");
+		try {
+
+			student.borrowBook(isbn5, student, borrowedAt);
+		} catch (HasLateBooksException e) {
+
+			// assert (e.getMessage().equals("You have already a late book!"));
+			message = e.getMessage();
+		}
+		assert (message.equals("You have already a late book!"));
+	}
+
+	@Test
+	void student_return_borrowed_book_if_it_available() {
+		LOGGER.info("Testing: student_return_borrowed_book_if_it_available");
+		long isbn2 = 465789453;
+
+		LocalDate borrowedAt = LocalDate.parse("2019-12-08");
+
+		Book borrowedBook = student.borrowBook(isbn2, student, borrowedAt);
+
+		assertEquals(borrowedAt, bookRepository.findBorrowedBookDate(borrowedBook));
+		student.returnBook(borrowedBook, student);
+
+		assertNotEquals(borrowedAt, bookRepository.findBorrowedBookDate(borrowedBook));
+		assertEquals(false, student.getBookList().contains(borrowedBook));
+
+	}
+
+	@Test
+	void student_Has_Not_Enough_Of_Money_To_Pay_Book() {
+		LOGGER.info("Testing: student_Has_Not_Enough_Of_Money_To_Pay_Book");
+		long isbn5 = 465789453;
+		String message = "";
+		student.setWallet(0.3f);
+		Book borrowedBook = null;
+		LocalDate borrowedAt = LocalDate.parse("2019-12-15");
+		try {
+
+			borrowedBook = student.borrowBook(isbn5, student, borrowedAt);
+			student.returnBook(borrowedBook, student);
+		} catch (HasNotEnoughMoneyException e) {
+
+			message = e.getMessage();
+		}
+		assert (message.equals("You don't have enough of money to pay!"));
+
 	}
 
 }

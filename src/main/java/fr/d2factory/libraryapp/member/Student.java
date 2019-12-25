@@ -1,7 +1,6 @@
 package fr.d2factory.libraryapp.member;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,11 +73,11 @@ public class Student extends Member {
 
 	@Override
 	public Book borrowBook(long isbnCode, Member member, LocalDate borrowedAt) {
-		List<Book> studentBorrowedBookList = getBookList();
+
 		Book book;
 
 		LOGGER.info("check if the student " + memberName + " has a late book");
-		if (studentBorrowedBookList.stream()
+		if (bookList.stream()
 				.filter(borrowedBook -> durationUtil
 						.numberOfDays(bookRepositoryDao.findBorrowedBookDate(borrowedBook)) > DAYS_BEFORE_LATE)
 				.findFirst().orElse(null) != null) {
@@ -90,14 +89,15 @@ public class Student extends Member {
 			book = bookRepositoryDao.findBook(isbnCode);
 
 			if (book.getIsbn() != null) {
-				LOGGER.debug("book is available : " + book.getTitle());
+				LOGGER.debug("book is available : " + book.toString());
 				bookRepositoryDao.saveBookBorrow(book, borrowedAt);
 
-				studentBorrowedBookList.add(book);
-				setBookList(studentBorrowedBookList);
+				bookList.add(book);
 
 				bookRepositoryDao.deleteBook(book);
-
+				LOGGER.info("The book " + book.getTitle() + " is borrowod by " + memberName);
+				book.setMember(member);
+				return book;
 			}
 
 			else {
@@ -105,13 +105,10 @@ public class Student extends Member {
 				throw new NotFoundBookException("The book you want to borrow is not found!");
 			}
 
-			LOGGER.info("The book " + book.getTitle() + " is borrowod by " + memberName);
 		} else {
 			LOGGER.error("This member cannot borrow another book!");
 			throw new HasLateBooksException("You have already a late book!");
 		}
-
-		return book;
 
 	}
 
@@ -127,6 +124,9 @@ public class Student extends Member {
 			payBook(numberOfDays);
 			bookRepositoryDao.addBook(book);
 			bookRepositoryDao.removeBorrowedBook(book, borrowedAt);
+
+			book.setMember(null);
+			bookList.remove(book);
 		}
 
 	}

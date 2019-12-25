@@ -1,7 +1,6 @@
 package fr.d2factory.libraryapp.member;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,10 +71,9 @@ public class Resident extends Member {
 	public Book borrowBook(long isbnCode, Member member, LocalDate borrowedAt) throws HasLateBooksException {
 
 		Book book;
-		List<Book> residentBorrowedBookList = getBookList();
 
 		LOGGER.info("check if the resident " + memberName + " has a late book");
-		if (residentBorrowedBookList.stream()
+		if (bookList.stream()
 				.filter(borrowedBook -> durationUtil
 						.numberOfDays(bookRepositoryDao.findBorrowedBookDate(borrowedBook)) > DAYS_BEFORE_LATE)
 				.findFirst().orElse(null) != null) {
@@ -89,13 +87,15 @@ public class Resident extends Member {
 			book = bookRepositoryDao.findBook(isbnCode);
 
 			if (book.getIsbn() != null) {
-				LOGGER.debug("book is available : " + book.getTitle());
+				LOGGER.debug("book is available : " + book.toString());
 
 				bookRepositoryDao.saveBookBorrow(book, borrowedAt);
-				residentBorrowedBookList.add(book);
-				setBookList(residentBorrowedBookList);
+
+				bookList.add(book);
+
 				bookRepositoryDao.deleteBook(book);
 				LOGGER.info("The book " + book.getTitle() + " is borrowod by " + memberName);
+				book.setMember(member);
 				return book;
 
 			}
@@ -130,6 +130,9 @@ public class Resident extends Member {
 
 				bookRepositoryDao.addBook(book);
 				bookRepositoryDao.removeBorrowedBook(book, borrowedAt);
+				book.setMember(null);
+
+				bookList.remove(book);
 
 			}
 

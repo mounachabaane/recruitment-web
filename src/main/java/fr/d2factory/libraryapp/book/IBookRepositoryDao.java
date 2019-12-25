@@ -3,7 +3,7 @@ package fr.d2factory.libraryapp.book;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface BookRepositoryDao {
+public interface IBookRepositoryDao {
 	/**
 	 * This method allows to add a list of book.
 	 * 
